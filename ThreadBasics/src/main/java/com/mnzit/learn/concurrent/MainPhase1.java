@@ -7,7 +7,7 @@ import lombok.extern.slf4j.Slf4j;
  * @author Manjit Shakya <manjit.shakya@f1soft.com>
  */
 @Slf4j
-public class Main {
+public class MainPhase1 {
 
     public static void main(String[] args) {
 
