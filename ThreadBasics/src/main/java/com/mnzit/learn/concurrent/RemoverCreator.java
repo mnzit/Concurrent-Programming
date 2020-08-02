@@ -9,6 +9,19 @@ import lombok.extern.slf4j.Slf4j;
 /**
  *
  * @author Manjit Shakya <manjit.shakya@f1soft.com>
+ *
+ *
+ * We also learned about wait() and notify() operations that can be used to
+ * block and resume threads that need to wait for specific conditions. For
+ * example, a creator thread performing an put() operation on a list
+ * can call wait() when the list is at its max size, so that it is only unblocked
+ * when a remover thread performing a remove() operation calls
+ * notify(). Likewise, a remover thread performing a remove() operation on a
+ * list can call wait() when the buffer is empty, so that it
+ * is only unblocked when a producer thread performing an insert() operation
+ * calls notify(). Structured locks are also referred to as intrinsic locks or
+ * monitors.
+ *
  */
 @Slf4j
 public class RemoverCreator {
@@ -65,17 +78,17 @@ class Store {
     private int count = -1;
 
     public void put(int element) {
-
+        final int MAX_SIZE = 3;
         try {
             synchronized (integers) {
-                while (integers.size() == 3) {
+                while (integers.size() == MAX_SIZE) {
                     log.debug("Waiting to shrink");
                     integers.wait();
                 }
                 log.debug("Inserting : {}", element);
                 count++;
                 integers.add(element);
-                integers.notifyAll();
+                integers.notify();
             }
         } catch (Exception e) {
 //            log.error("Exception : {}", e);
@@ -94,7 +107,7 @@ class Store {
                 log.debug("Removing : {}", integers.get(count));
                 integers.remove(count);
                 count--;
-                integers.notifyAll();
+                integers.notify();
             }
         } catch (Exception e) {
 //            log.error("Exception : {}", e);
