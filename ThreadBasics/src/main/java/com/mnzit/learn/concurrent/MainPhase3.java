@@ -17,19 +17,23 @@ public class MainPhase3 {
 
     public static void main(String[] args) throws InterruptedException {
 
-        log.debug("This is start printed by : {}", Thread.currentThread().getName());
+        log.debug("This is start printed by PUT: {}", Thread.currentThread().getName());
 
         List<Employee> employees = new ArrayList<>();
 
-        Thread thread = new Thread(new RunnableDemo2(15000L, employees));
+        Thread thread = new Thread(new RunnableDemo2(5L, employees));
+
+        Thread.sleep(1000);
 
         thread.start();
 
         thread.join();
 
+        Thread.sleep(1000);
+
         log.debug("Total Employees : {}", employees.size());
 
-        log.debug("This is end printed by : {}", Thread.currentThread().getName());
+        log.debug("This is end printed by POP: {}", Thread.currentThread().getName());
     }
 
 }
@@ -50,22 +54,30 @@ class RunnableDemo2 implements Runnable {
      * creates another thread and it waits until the another thread completes
      * until the level reaches 1 Main Thread -> Thread 0 -> Thread 1 -> Thread 2
      * -> Thread 3
+     *
+     * LIFO
      */
     @Override
     public void run() {
         if (level >= 1) {
             level--;
-
-            employees.add(new Employee(level, Thread.currentThread().getName()));
-
-            Thread thread = new Thread(new RunnableDemo2(level, employees));
-
-            thread.start();
-
             try {
-                log.debug("This is start printed by : {}", Thread.currentThread().getName());
+                Thread.sleep(1000);
+
+                employees.add(new Employee(level, Thread.currentThread().getName()));
+
+                Thread thread = new Thread(new RunnableDemo2(level, employees));
+
+                thread.start();
+
+                log.debug("This is start printed by PUT: {}", Thread.currentThread().getName());
                 thread.join();
-                log.debug("This is end printed by : {}", Thread.currentThread().getName());
+
+                Thread.sleep(1000);
+
+                employees.remove(employees.size() - 1);
+
+                log.debug("This is end printed by POP: {}", Thread.currentThread().getName());
             } catch (InterruptedException e) {
                 log.error("Exception : {}:{}", e.getMessage(), e);
             }
