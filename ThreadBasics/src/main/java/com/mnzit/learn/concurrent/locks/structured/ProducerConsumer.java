@@ -1,4 +1,4 @@
-package com.mnzit.learn.concurrent;
+package com.mnzit.learn.concurrent.locks.structured;
 
 import java.util.ArrayList;
 import java.util.List;
